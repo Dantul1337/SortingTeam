@@ -8,7 +8,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(sort_benchmark
     main.cpp
+    structures/linked_list.cpp
 )
+
+target_include_directories(sort_benchmark PRIVATE include)
 
 if(MSVC)
     target_compile_options(sort_benchmark PRIVATE /W4)
