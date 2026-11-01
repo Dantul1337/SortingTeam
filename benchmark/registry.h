@@ -9,7 +9,6 @@ struct Algorithm
 {
     std::string name;
     SortFunction sort;
-    std::string dataDir;
 };
 
 const std::vector<Algorithm>& algorithms();

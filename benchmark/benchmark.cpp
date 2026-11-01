@@ -92,26 +92,26 @@ std::vector<std::string> runAllBenchmarks(
 {
     std::vector<std::string> logs;
 
-    for (const Algorithm& algorithm : algorithms()) {
-        const std::string directory = dataRoot + "/" + algorithm.dataDir;
-        const std::vector<std::string> files = listDataFiles(directory);
+    const std::vector<std::string> files = listAllDataFiles(dataRoot);
+    if (files.empty()) {
+        std::cerr << "[skip] no data files in " << dataRoot << '\n';
+        return logs;
+    }
 
-        if (files.empty()) {
-            std::cerr << "[skip] " << algorithm.name << ": no data files in " << directory << '\n';
-            continue;
-        }
+    for (const std::string& file : files) {
+        Node* input = loadList(file);
 
-        for (const std::string& file : files) {
-            Node* input = loadList(file);
+        for (const Algorithm& algorithm : algorithms()) {
             const BenchmarkResult result = runBenchmark(
                 algorithm.name, algorithm.sort, input, datasetName(file), repeats);
-            deleteList(input);
 
             logs.push_back(result.toLine());
             if (onResult) {
                 onResult(logs.back());
             }
         }
+
+        deleteList(input);
     }
     return logs;
 }

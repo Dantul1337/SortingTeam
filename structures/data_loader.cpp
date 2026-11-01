@@ -48,6 +48,23 @@ std::vector<std::string> listDataFiles(const std::string& directory){
     return files;
 }
 
+std::vector<std::string> listAllDataFiles(const std::string& root){
+    namespace fs = std::filesystem;
+    std::vector<std::string> files;
+    std::error_code ec;
+    if(!fs::is_directory(root, ec)){
+        return files;
+    }
+    for (const auto& entry : fs::directory_iterator(root, ec)){
+        if (entry.is_directory()){
+            const std::vector<std::string> inner = listDataFiles(entry.path().string());
+            files.insert(files.end(), inner.begin(), inner.end());
+        }
+    }
+    std::sort(files.begin(), files.end());
+    return files;
+}
+
 std::string datasetName(const std::string& path){
     return std::filesystem::path(path).stem().string();
 }
